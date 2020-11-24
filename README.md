@@ -1,10 +1,9 @@
 # manip_utils
 
 # To set up:
-1. ```cd ~/catkin_ws/src/```
-2. ```git clone https://github.com/Kinovarobotics/ros_kortex```
-3. ```git clone https://github.com/HARPLab/manip_utils```
-4. ```catkin build```
+1. Clone this repository to your ``catkin_ws/src/``
+2. Clone this one too: ```git clone https://github.com/Kinovarobotics/ros_kortex```
+3. Build your catkin workspace and source the ``~/.bashrc`` file
 
 # To test:
 1. Launch Gazebo: ```roslaunch kortex_gazebo spawn_kortex_robot.launch```
