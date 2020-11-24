@@ -6,5 +6,6 @@
 3. ```git clone https://github.com/HARPLab/manip_utils```
 4. ```catkin build```
 
-# To launch Gazebo:
-1. ```roslaunch kortex_gazebo spawn_kortex_robot.launch```
+# To test:
+1. Launch Gazebo: ```roslaunch kortex_gazebo spawn_kortex_robot.launch```
+2. In a separate terminal, while Gazebo is running, execute a trajectory from file: ```roslaunch manip_utils cart_traj_from_file.launch```
