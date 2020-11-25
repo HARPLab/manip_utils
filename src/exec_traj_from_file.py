@@ -41,10 +41,10 @@ def read_file(filename):
             target_pose.position.x = float(pose_str[0])
             target_pose.position.y = float(pose_str[1])
             target_pose.position.z = float(pose_str[2])
-            target_pose.orientation.w = float(pose_str[3])
-            target_pose.orientation.x = float(pose_str[4])
-            target_pose.orientation.y = float(pose_str[5])
-            target_pose.orientation.z = float(pose_str[6])
+            target_pose.orientation.x = float(pose_str[3])
+            target_pose.orientation.y = float(pose_str[4])
+            target_pose.orientation.z = float(pose_str[5])
+            target_pose.orientation.w = float(pose_str[6])
         else:
             rospy.logerr("Formatting error in pose file: " % (pose_str))
             return []
