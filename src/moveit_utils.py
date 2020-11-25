@@ -221,6 +221,8 @@ class ArmMoveIt(object):
         else:
             start_state = self._copy_state()
 
+        print("setting start state:")
+        print(start_state)
         try:
             self.group.set_start_state(start_state)
         except moveit_commander.MoveItCommanderException as e:
@@ -264,11 +266,16 @@ class ArmMoveIt(object):
             default for now.
         """
         
+        print("setting target:")
         try:
             # sanitize possible numpy before sending off to moveit
             if type(target).__module__ == 'numpy':
                 target = target.tolist()
 
+            print(target)
+            print("ee frame: " + str(self.group.get_end_effector_link()))
+            print("ref frame: " + str(self.group.get_pose_reference_frame()))
+            print("base frame: " + str(self.group.get_planning_frame()))
             self.group.set_pose_target(target)
             self.group.set_planner_id(self.planner)
         except moveit_commander.MoveItCommanderException as e:

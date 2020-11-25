@@ -57,21 +57,22 @@ def main():
     target_poses = read_file(filename)
 
     for target_pose in target_poses:
-        print('\n The target coordinate is: %s \n' %target_pose)     
-    
-        ## IK for target position  
-        #joint_target = arm.get_IK(target_pose)
-        #print('IK calculation step:DONE') 
-    
-        ## planning with joint target from IK 
-        #plan_traj = arm.plan_pose(joint_target, is_joint_pos=True)
-        #print('Planning step with target joint angles:DONE') 
-    
-        ## planning with pose target
-        plan_traj = arm.plan_pose(target_pose, is_joint_pos=False)
-    
-        ## execution of the movement   
-        arm.group.execute(plan_traj)
+        if not rospy.is_shutdown():
+            print('\n The target coordinate is: %s \n' %target_pose)     
+        
+            ## IK for target position  
+            #joint_target = arm.get_IK(target_pose)
+            #print('IK calculation step:DONE') 
+        
+            ## planning with joint target from IK 
+            #plan_traj = arm.plan_pose(joint_target, is_joint_pos=True)
+            #print('Planning step with target joint angles:DONE') 
+        
+            ## planning with pose target
+            plan_traj = arm.plan_pose(target_pose, is_joint_pos=False)
+        
+            ## execution of the movement   
+            arm.group.execute(plan_traj)
     
 if __name__ == '__main__':
     moveit_commander.roscpp_initialize(sys.argv)
