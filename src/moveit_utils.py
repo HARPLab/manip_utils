@@ -34,6 +34,8 @@ class ArmMoveIt(object):
           self.group = moveit_commander.MoveGroupCommander(arm_group_name, ns=rospy.get_namespace())
           self.group.set_pose_reference_frame(base_frame)
           self.group.set_end_effector_link(ee_frame)
+          self.group.set_goal_orientation_tolerance(0.01)
+
           self.display_trajectory_publisher = rospy.Publisher(rospy.get_namespace() + 'move_group/display_planned_path',
                                                         moveit_msgs.msg.DisplayTrajectory,
                                                         queue_size=20)
@@ -221,6 +223,7 @@ class ArmMoveIt(object):
         else:
             start_state = self._copy_state()
 
+        print("orientation tol: " + str(self.group.get_goal_orientation_tolerance()))
         print("setting start state:")
         print(start_state)
         try:
