@@ -16,4 +16,4 @@ wstool merge -t src https://raw.githubusercontent.com/HARPLab/moveit/kinetic-dev
 wstool update -t src
 rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
 catkin config --extend /opt/ros/kinetic --cmake-args -DCATKIN_ENABLE_TESTING=0 -DUSE_CONAN=OFF
-sudo apt install ros-kinetic-graph-msgs```
+sudo apt install ros-kinetic-graph-msgs
