@@ -4,11 +4,13 @@
     <arg name="robot_name" default="my_gen3"/>
     <arg name="start_delay_seconds" default="0"/>
     <arg name="traj_filename" default="test_traj.txt"/>
+    <arg name="ee" default="True"/>
     <arg name="traj_file_loc" default="$(find manip_utils)/data/$(arg traj_filename)"/>
 
     <!-- Launch the example in that namespace -->
     <node name="exec_cart_traj" pkg="manip_utils" type="exec_traj_from_file.py" ns="$(arg robot_name)" output="screen" launch-prefix="bash -c 'sleep $(arg start_delay_seconds); $0 $@' ">
         <param name="traj_file" value="$(arg traj_file_loc)"/>
+        <param name="ee" value="$(arg ee)"/>
     </node>
 
 </launch>

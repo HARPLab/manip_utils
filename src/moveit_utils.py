@@ -15,7 +15,7 @@ import std_msgs.msg
 from math import pi, floor, ceil, fabs
 
 class ArmMoveIt(object):
-    def __init__(self, planner="RRTConnectkConfigDefault", base_frame="base_link", ee_frame="tool_frame"):
+    def __init__(self, planner="RRTConnectkConfigDefault", base_frame="base_link", ee_frame="end_effector_link"):
         super(ArmMoveIt, self).__init__()
 
         try:
@@ -223,9 +223,6 @@ class ArmMoveIt(object):
         else:
             start_state = self._copy_state()
 
-        print("orientation tol: " + str(self.group.get_goal_orientation_tolerance()))
-        print("setting start state:")
-        print(start_state)
         try:
             self.group.set_start_state(start_state)
         except moveit_commander.MoveItCommanderException as e:
@@ -269,16 +266,11 @@ class ArmMoveIt(object):
             default for now.
         """
         
-        print("setting target:")
         try:
             # sanitize possible numpy before sending off to moveit
             if type(target).__module__ == 'numpy':
                 target = target.tolist()
 
-            print(target)
-            print("ee frame: " + str(self.group.get_end_effector_link()))
-            print("ref frame: " + str(self.group.get_pose_reference_frame()))
-            print("base frame: " + str(self.group.get_planning_frame()))
             self.group.set_pose_target(target)
             self.group.set_planner_id(self.planner)
         except moveit_commander.MoveItCommanderException as e:
@@ -908,7 +900,6 @@ def main():
       
         ##   Assigned tarPose the current Pose of the robot 
         target_pose = arm.group.get_current_pose().pose
-        print(target_pose)
 
         ## ask input from user (COMMENT IF NOT USE AND WANT TO ASSIGN MANUAL VALUE IN CODE)    
         target_pose.position = ask_position(arm,target_pose)   

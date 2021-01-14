@@ -12,15 +12,22 @@ import geometry_msgs.msg
 import std_msgs.msg
 from moveit_utils import ArmMoveIt
 
-def read_file(filename):
+def read_file(is_joint_pos, filename):
     traj_file = open(filename, 'r')
     lines = traj_file.readlines()
     poses = []
 
     for l in lines:
+        l = l.replace(',', '')
+        l = l.replace(';', '')
         pose_str = l.strip().split()
         target_pose = geometry_msgs.msg.Pose()
-        if len(pose_str) == 3:
+        if is_joint_pos:
+            pose_pt = dict() 
+            for p in range(len(pose_str)):
+                pose_pt["joint_" + str(p+1)] = float(pose_str[p])
+            target_pose = pose_pt
+        elif len(pose_str) == 3:
             target_pose.position.x = float(pose_str[0])
             target_pose.position.y = float(pose_str[1])
             target_pose.position.z = float(pose_str[2])
@@ -54,7 +61,8 @@ def read_file(filename):
 def main():
     arm = ArmMoveIt()
     filename = rospy.get_param("~traj_file")
-    target_poses = read_file(filename)
+    is_joint_pos = not rospy.get_param("~ee")
+    target_poses = read_file(is_joint_pos, filename)
 
     for target_pose in target_poses:
         if not rospy.is_shutdown():
@@ -69,7 +77,10 @@ def main():
             #print('Planning step with target joint angles:DONE') 
         
             ## planning with pose target
-            plan_traj = arm.plan_pose(target_pose, is_joint_pos=False)
+            plan_traj = arm.plan_pose(target_pose, is_joint_pos=is_joint_pos)
+            plan_pts = plan_traj.joint_trajectory.points
+            print("Last joint pose:")
+            print(plan_pts[-1].positions)
         
             ## execution of the movement   
             arm.group.execute(plan_traj)
