@@ -58,12 +58,54 @@ def read_file(is_joint_pos, filename):
         poses.append(target_pose)
     return poses
 
+def read_joint_bagfile(filename, topic):
+    import rosbag
+    from sensor_msgs.msg import JointState
+
+    poses = []
+    bag = rosbag.Bag(filename)
+    for topic, msg, t in bag.read_messages(topics=[topic]):
+        pose = dict(zip(msg.name, msg.position))
+        names = list(pose.keys())
+        for n in names:
+            if not n.startswith("joint_"):
+                pose.pop(n)
+        poses.append(pose)
+    bag.close()
+    return poses
+
+## Plan and transform a RobotTrajectory as a list of poses
+def plan_joint_waypoints(arm, poses):
+    plan = arm.plan_waypoints(poses, merge_plans=True, is_joint_pos=True, group_id=0)
+    poses = []
+    for p in plan.joint_trajectory.points:
+        pose = dict(zip(plan.joint_trajectory.joint_names, p.positions))
+        names = list(pose.keys())
+        for n in names:
+            if not n.startswith("joint_"):
+                pose.pop(n)
+        poses.append(pose)
+    pdb.set_trace()
+    return poses
+
 def main():
     arm = ArmMoveIt()
     filename = rospy.get_param("~traj_file")
+    print(filename)
     is_joint_pos = not rospy.get_param("~ee")
-    target_poses = read_file(is_joint_pos, filename)
+    bagfile = rospy.get_param("~bagfile", False)
+    pose_num = int(rospy.get_param("~pose_num", "-1"))
+    if bagfile and is_joint_pos:
+        poses = read_joint_bagfile(filename, "/joint_poses")
+        target_poses = plan_joint_waypoints(arm, poses)
+        pdb.set_trace()
+    else:
+        target_poses = read_file(is_joint_pos, filename)
 
+    if pose_num > -1:
+        target_poses = [target_poses[pose_num]]
+
+    pdb.set_trace()
     for target_pose in target_poses:
         if not rospy.is_shutdown():
             print('\n The target coordinate is: %s \n' %target_pose)     
@@ -83,7 +125,7 @@ def main():
             print(plan_pts[-1].positions)
         
             ## execution of the movement   
-            arm.group.execute(plan_traj)
+            arm.group.execute(plan_traj, wait = True)
     
 if __name__ == '__main__':
     moveit_commander.roscpp_initialize(sys.argv)

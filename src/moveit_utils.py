@@ -787,8 +787,9 @@ class ArmMoveIt(object):
             simplified_joints = []
             #separate the joint name from the group name
             joint_order = ["_".join(s.split("_")[1::]) for s in self.group.get_active_joints()]
+            continuous_joints = ["_".join(s.split("_")[1::]) for s in self.group.get_active_joints()]
             
-            continuous_joint_indices = [joint_order.index(j) for j in self.continuous_joints]
+            continuous_joint_indices = [joint_order.index(j) for j in continuous_joints]
 
             for i in range(len(joints)):
                 a = joints[i]
